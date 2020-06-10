@@ -1,0 +1,11 @@
+{
+    "name": "jascha030/wp-plugin-core",
+    "description": "Core classes for wordpress plugin template",
+    "authors": [
+        {
+            "name": "Jascha van Aalst",
+            "email": "mr.jascha@gmail.com"
+        }
+    ],
+    "require": {}
+}
