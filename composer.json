@@ -4,7 +4,8 @@
     "authors": [
         {
             "name": "Jascha van Aalst",
-            "email": "mr.jascha@gmail.com"
+            "email": "contact@jaschavanaalst.nl",
+            "role": "Developer"
         }
     ],
     "repositories": [
@@ -14,6 +15,12 @@
         }
     ],
     "require": {
-        "jascha030/wp-subscriptions": "dev-develop"
+        "jascha030/wp-subscriptions": "*",
+        "symfony/dotenv": "^5.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Jascha030\\WP\\Plugin\\Core\\": "src/"
+        }
     }
 }
