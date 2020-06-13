@@ -4,17 +4,6 @@ namespace Jascha030\WP\Plugin\Core\Notice;
 
 use Exception;
 
-/**
- * Class AdminPluginNotice
- *
- * Represents wp-admin notice
- *
- * @package Jascha030\WP\Plugin\Plugin\Notice
- * @author Social Brothers
- *
- * Internal use
- * @developer Jascha
- */
 class AdminPluginNotice
 {
     public const NOTICE_ERROR = 0;
