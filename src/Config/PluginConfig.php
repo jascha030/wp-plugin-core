@@ -9,17 +9,6 @@ use Symfony\Component\Dotenv\Dotenv;
 
 class PluginConfig
 {
-    protected const CONSTANTS_TO_SET = [
-        'DIR',
-        'URL',
-        'DOMAIN',
-        'DOMAIN_DIR',
-        'VERSION',
-        'NAME',
-        'SLUG',
-        'DB',
-    ];
-
     protected $constants = [];
 
     protected $pluginData = [];
@@ -28,13 +17,17 @@ class PluginConfig
 
     protected $pluginFile;
 
+    protected $providers = [];
+
+    protected $stylesheets = [];
+
+    protected $scripts = [];
+
     protected $useEnv = false;
 
     protected $envPath;
 
     protected $env;
-
-    protected $providers = [];
 
     protected $mainPluginClass;
 
@@ -64,6 +57,15 @@ class PluginConfig
         $this->providers = $providers;
     }
 
+    public function getConstant(string $key)
+    {
+        if (array_key_exists(strtolower($key), $this->constants)) {
+            return $this->constants[$key];
+        }
+
+        return false;
+    }
+
     public function enableEnv(string $path): void
     {
         $this->useEnv  = true;
@@ -78,6 +80,11 @@ class PluginConfig
     public function getProviders(): array
     {
         return $this->providers;
+    }
+
+    public function getMain(): string
+    {
+        return $this->mainPluginClass;
     }
 
     public function getEnv()
@@ -95,8 +102,11 @@ class PluginConfig
                 $this->env->load($this->envPath);
             }
 
-            foreach ($this->constants as $key => $const) {
-                $this->define($key, $const);
+            $constants       = $this->constants;
+            $this->constants = [];
+
+            foreach ($constants as $key => $constant) {
+                $this->define(strtoupper($key), $constant);
             }
 
             foreach ($this->pluginData as $key => $value) {
@@ -107,8 +117,11 @@ class PluginConfig
 
     protected function define(string $name, $value): void
     {
-        if (! defined($this->pluginPrefix . $name)) {
-            Plugin::define($this->pluginPrefix . $name, $value);
+        $const = $this->pluginPrefix . strtoupper($name);
+
+        if (! defined($const)) {
+            Plugin::define($const, $value);
+            $this->constants[strtolower($name)] = $value;
         }
     }
 }
