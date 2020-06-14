@@ -33,7 +33,7 @@ class Plugin extends Container implements Runnable
     public function __construct(string $file)
     {
         $this->pluginFile = $file;
-        $this->pluginDir = plugin_dir_path($this->pluginFile);
+        $this->pluginDir  = plugin_dir_path($this->pluginFile);
 
         try {
             $this->bootstrapPlugin();
@@ -47,19 +47,19 @@ class Plugin extends Container implements Runnable
         static::$instance = $this;
     }
 
+    public static function define(string $name, $value): void
+    {
+        if (! defined($name)) {
+            define($name, $value);
+        }
+    }
+
     /**
      * @return mixed
      */
     public function getPluginFile()
     {
         return $this->pluginFile;
-    }
-
-    public static function define(string $name, $value): void
-    {
-        if (! defined($name)) {
-            define($name, $value);
-        }
     }
 
     public function run(): void
@@ -127,6 +127,7 @@ function pluginDir()
     return \plugin_dir_path(Plugin::getInstance()->getPluginFile());
 }
 
-function pluginUrl() {
+function pluginUrl()
+{
     return \plugin_dir_url(Plugin::getInstance()->getPluginFile());
 }

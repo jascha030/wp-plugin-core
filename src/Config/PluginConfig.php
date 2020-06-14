@@ -15,7 +15,7 @@ use Symfony\Component\Dotenv\Dotenv;
  *
  * @package Jascha030\WP\Plugin\Core\Config
  */
-class PluginConfig
+class PluginConfig implements Config
 {
     protected $constants = [];
 
