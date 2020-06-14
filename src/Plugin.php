@@ -20,6 +20,8 @@ class Plugin extends Container implements Runnable
 
     protected $pluginDir;
 
+    protected $providerClass;
+
     protected $ran = false;
 
     protected $error;
@@ -67,15 +69,15 @@ class Plugin extends Container implements Runnable
 
     public function getPluginProvider(): PluginProvider
     {
-        return $this->resolve($this->pluginConfig->getMain());
+        return $this->resolve($this->providerClass);
     }
 
     protected function setPluginProvider(): void
     {
-        $providerClass = $this->pluginConfig->getMain();
-        $provider      = new $providerClass($this->getConfig());
+        $provider            = $this->getConfig()->getMain();
+        $this->providerClass = get_class($provider);
 
-        $this->bind($this->pluginConfig->getMain(), $provider);
+        $this->bind($this->providerClass, $provider);
     }
 
     /**

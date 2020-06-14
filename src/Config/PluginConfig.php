@@ -3,6 +3,7 @@
 namespace Jascha030\WP\Plugin\Core\Config;
 
 use Jascha030\WP\Plugin\Core\Plugin;
+use Jascha030\WP\Plugin\Core\PluginProvider;
 use Jascha030\WP\Subscriptions\Exception\DoesNotImplementProviderException;
 use Jascha030\WP\Subscriptions\Provider\SubscriptionProvider;
 use Symfony\Component\Dotenv\Dotenv;
@@ -46,6 +47,16 @@ class PluginConfig
         $this->constants = $constants;
     }
 
+    public function scripts(array $scripts): void
+    {
+        $this->scripts = $scripts;
+    }
+
+    public function styles(array $stylesheets): void
+    {
+        $this->stylesheets = $stylesheets;
+    }
+
     public function providers(array $providers = []): void
     {
         foreach ($providers as $provider) {
@@ -82,7 +93,14 @@ class PluginConfig
         return $this->providers;
     }
 
-    public function getMain(): string
+    public function getMain(): PluginProvider
+    {
+        $class = $this->getMainClass();
+
+        return new $class($this->getConstant('name'), $this->stylesheets, $this->scripts);
+    }
+
+    public function getMainClass(): string
     {
         return $this->mainPluginClass;
     }

@@ -2,7 +2,6 @@
 
 namespace Jascha030\WP\Plugin\Core;
 
-use Jascha030\WP\Plugin\Core\Config\PluginConfig;
 use Jascha030\WP\Plugin\Core\Notice\AdminPluginNotice;
 use Jascha030\WP\Subscriptions\Provider\ActionProvider;
 
@@ -25,11 +24,14 @@ abstract class PluginProvider implements ActionProvider
     protected $scripts;
 
     public function __construct(
-        PluginConfig $config,
+        string $name,
+        array $styles,
+        array $scripts,
         string $minWpVersion = '5.0.0'
     ) {
-        $this->pluginName       = $config->getConstant('name');
-        $this->version          = $config->getConstant('version');
+        $this->pluginName       = $name;
+        $this->stylesheets      = $styles;
+        $this->scripts          = $scripts;
         $this->minimumWpVersion = $minWpVersion;
 
         if (! $this->verifyWpVersion()) {
