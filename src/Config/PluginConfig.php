@@ -155,6 +155,10 @@ class PluginConfig implements Config
         foreach ($this->pluginData as $key => $value) {
             $this->define(strtoupper($key), $value);
         }
+
+        foreach ($this->components as $component) {
+            $component->run();
+        }
     }
 
     public function components(string $name, array $components): void
