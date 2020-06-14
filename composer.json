@@ -1,26 +1,29 @@
 {
-    "name": "jascha030/wp-plugin-core",
-    "description": "Core classes for wordpress plugin template",
-    "authors": [
-        {
-            "name": "Jascha van Aalst",
-            "email": "contact@jaschavanaalst.nl",
-            "role": "Developer"
-        }
-    ],
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../wp-subscriptions"
-        }
-    ],
-    "require": {
-        "jascha030/wp-subscriptions": "*",
-        "symfony/dotenv": "^5.1"
-    },
-    "autoload": {
-        "psr-4": {
-            "Jascha030\\WP\\Plugin\\Core\\": "src/"
-        }
+  "name": "jascha030/wp-plugin-core",
+  "description": "Core classes for wordpress plugin template",
+  "authors": [
+    {
+      "name": "Jascha van Aalst",
+      "email": "contact@jaschavanaalst.nl",
+      "role": "Developer"
     }
+  ],
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../wp-subscriptions"
+    }
+  ],
+  "require": {
+    "jascha030/wp-subscriptions": "*",
+    "symfony/dotenv": "^5.1"
+  },
+  "require-dev": {
+    "roave/security-advisories": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "Jascha030\\WP\\Plugin\\Core\\": "src/"
+    }
+  }
 }
