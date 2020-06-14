@@ -5,6 +5,7 @@ namespace Jascha030\WP\Plugin\Core\Config;
 use Jascha030\WP\Plugin\Core\Plugin;
 use Jascha030\WP\Plugin\Core\PluginProvider;
 use Jascha030\WP\Subscriptions\Exception\DoesNotImplementProviderException;
+use Jascha030\WP\Subscriptions\Exception\InvalidArgumentException;
 use Jascha030\WP\Subscriptions\Provider\SubscriptionProvider;
 use Symfony\Component\Dotenv\Dotenv;
 
@@ -38,6 +39,8 @@ class PluginConfig implements Config
     protected $env;
 
     protected $mainPluginClass;
+
+    protected $components = [];
 
     public function pluginFile(string $file): void
     {
@@ -152,6 +155,29 @@ class PluginConfig implements Config
         foreach ($this->pluginData as $key => $value) {
             $this->define(strtoupper($key), $value);
         }
+    }
+
+    public function components(string $name, array $components): void
+    {
+        $pluginComponentClass = PluginComponent::class;
+
+        foreach ($components as $component) {
+            if (! is_subclass_of($component, $pluginComponentClass)) {
+                $class = get_class($component);
+                throw new InvalidArgumentException("Class: {$class} does not implement {$pluginComponentClass}");
+            }
+
+            $this->components[$name] = $component;
+        }
+    }
+
+    public function getComponent(string $name): PluginComponent
+    {
+        if (! isset($this->components[$name])) {
+            throw new InvalidArgumentException("Cant find component: {$name}");
+        }
+
+        return $this->components[$name];
     }
 
     protected function define(string $name, $value): void
