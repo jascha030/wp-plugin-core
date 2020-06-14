@@ -11,4 +11,5 @@ use Jascha030\WP\Subscriptions\Runnable\Runnable;
  */
 interface Config extends Runnable
 {
+    public function config();
 }

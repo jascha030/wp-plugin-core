@@ -157,15 +157,16 @@ class PluginConfig implements Config
         }
 
         foreach ($this->components as $component) {
+            $component->config();
             $component->run();
         }
     }
 
-    public function components(string $name, array $components): void
+    public function components(array $components): void
     {
         $pluginComponentClass = PluginComponent::class;
 
-        foreach ($components as $component) {
+        foreach ($components as $name => $component) {
             if (! is_subclass_of($component, $pluginComponentClass)) {
                 $class = get_class($component);
                 throw new InvalidArgumentException("Class: {$class} does not implement {$pluginComponentClass}");
