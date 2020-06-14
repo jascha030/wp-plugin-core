@@ -74,7 +74,7 @@ class Plugin extends Container implements Runnable
 
     protected function setPluginProvider(): void
     {
-        $provider            = $this->getConfig()->getMain();
+        $provider            = $this->pluginConfig->getMain();
         $this->providerClass = get_class($provider);
 
         $this->bind($this->providerClass, $provider);
@@ -93,6 +93,7 @@ class Plugin extends Container implements Runnable
 
         $this->pluginConfig = $bootstrapFile;
         $this->pluginConfig->run();
+        $this->setPluginProvider();
     }
 
     /**
@@ -103,7 +104,7 @@ class Plugin extends Container implements Runnable
         $subscriptionContainer = WordpressSubscriptionContainer::getInstance();
         $providers             = $this->pluginConfig->getProviders();
 
-        $subscriptionContainer->register($this->getPluginProvider());
+        $subscriptionContainer->register($this->providerClass, $this->getPluginProvider());
 
         foreach ($providers as $provider) {
             $subscriptionContainer->register($provider);

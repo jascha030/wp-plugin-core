@@ -8,6 +8,13 @@ use Jascha030\WP\Subscriptions\Exception\DoesNotImplementProviderException;
 use Jascha030\WP\Subscriptions\Provider\SubscriptionProvider;
 use Symfony\Component\Dotenv\Dotenv;
 
+/**
+ * Class PluginConfig
+ *
+ * @todo: Add Services
+ *
+ * @package Jascha030\WP\Plugin\Core\Config
+ */
 class PluginConfig
 {
     protected $constants = [];
@@ -32,8 +39,16 @@ class PluginConfig
 
     protected $mainPluginClass;
 
-    public function prefix(string $prefix): void
+    public function pluginFile(string $file): void
     {
+        $this->pluginFile = $file;
+    }
+
+    public function prefix(string $prefix = null): void
+    {
+        if (empty($prefix)) {
+            $prefix = $this->generateUUID();
+        }
         $this->pluginPrefix = $prefix;
     }
 
@@ -112,24 +127,30 @@ class PluginConfig
 
     public function run(): void
     {
-        if (defined('ABSPATH') && function_exists('get_plugin_data')) {
-            $this->pluginData = get_plugin_data($this->pluginFile);
+        $this->pluginData = \get_file_data(
+            $this->pluginFile,
+            [
+                'Name'        => 'Plugin Name',
+                'Version'     => 'Version',
+                'Description' => 'Description',
+                'TextDomain'  => 'Text Domain',
+            ]
+        );
 
-            if ($this->useEnv) {
-                $this->env = new Dotenv();
-                $this->env->load($this->envPath);
-            }
+        if ($this->useEnv) {
+            $this->env = new Dotenv();
+            $this->env->load($this->envPath);
+        }
 
-            $constants       = $this->constants;
-            $this->constants = [];
+        $constants       = $this->constants;
+        $this->constants = [];
 
-            foreach ($constants as $key => $constant) {
-                $this->define(strtoupper($key), $constant);
-            }
+        foreach ($constants as $key => $constant) {
+            $this->define(strtoupper($key), $constant);
+        }
 
-            foreach ($this->pluginData as $key => $value) {
-                $this->define(strtoupper($key), $value);
-            }
+        foreach ($this->pluginData as $key => $value) {
+            $this->define(strtoupper($key), $value);
         }
     }
 
@@ -141,5 +162,20 @@ class PluginConfig
             Plugin::define($const, $value);
             $this->constants[strtolower($name)] = $value;
         }
+    }
+
+    protected function generateUUID(): string
+    {
+        return sprintf(
+            '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0x0fff) | 0x4000,
+            mt_rand(0, 0x3fff) | 0x8000,
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff)
+        );
     }
 }

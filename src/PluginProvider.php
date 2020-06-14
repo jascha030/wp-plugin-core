@@ -55,6 +55,26 @@ abstract class PluginProvider implements ActionProvider
         }
     }
 
+    public function enqueueScripts(): void
+    {
+        foreach ($this->scripts as $handle => $script) {
+            $src      = $this->pluginFile(true) . $script[0];
+            $deps     = $script[1] ?? [];
+            $ver      = $script[2] ?? null;
+            $inFooter = $script[3] ?? false;
+
+            wp_enqueue_script($handle, $src, $deps, $ver, $inFooter);
+        }
+    }
+
+    protected function enqueueStyles(): void
+    {
+        foreach ($this->stylesheets as $handle => $styleSheet) {
+            $src = $this->pluginFile(true) . $styleSheet;
+            wp_enqueue_style($handle, $src);
+        }
+    }
+
     /**
      * Set notice to display in wp-admin
      *
