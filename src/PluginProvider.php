@@ -44,6 +44,10 @@ abstract class PluginProvider implements ActionProvider
         }
 
         static::$actions['admin_notices'] = 'notices';
+
+        if (! empty($this->styleSheets) || ! empty($this->scripts)) {
+            static::$actions['wp_enqueue_scripts'] = [['enqueueScripts'], ['enqueueStyles']];
+        }
     }
 
     final public function notices(): void
@@ -58,7 +62,7 @@ abstract class PluginProvider implements ActionProvider
     public function enqueueScripts(): void
     {
         foreach ($this->scripts as $handle => $script) {
-            $src      = $this->pluginFile(true) . $script[0];
+            $src      = pluginUrl() . $script[0];
             $deps     = $script[1] ?? [];
             $ver      = $script[2] ?? null;
             $inFooter = $script[3] ?? false;
@@ -67,10 +71,10 @@ abstract class PluginProvider implements ActionProvider
         }
     }
 
-    protected function enqueueStyles(): void
+    public function enqueueStyles(): void
     {
         foreach ($this->stylesheets as $handle => $styleSheet) {
-            $src = $this->pluginFile(true) . $styleSheet;
+            $src = pluginUrl() . $styleSheet;
             wp_enqueue_style($handle, $src);
         }
     }

@@ -16,7 +16,11 @@ use Jascha030\WP\Subscriptions\Shared\Container\WordpressSubscriptionContainer;
  */
 class Plugin extends Container implements Runnable
 {
+    protected static $instance;
+
     protected $pluginConfig;
+
+    protected $pluginFile;
 
     protected $pluginDir;
 
@@ -28,7 +32,8 @@ class Plugin extends Container implements Runnable
 
     public function __construct(string $file)
     {
-        $this->pluginDir = plugin_dir_path($file);
+        $this->pluginFile = $file;
+        $this->pluginDir = plugin_dir_path($this->pluginFile);
 
         try {
             $this->bootstrapPlugin();
@@ -38,6 +43,16 @@ class Plugin extends Container implements Runnable
         } catch (DoesNotImplementProviderException $e) {
             // todo: error handling / logging
         }
+
+        static::$instance = $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPluginFile()
+    {
+        return $this->pluginFile;
     }
 
     public static function define(string $name, $value): void
@@ -45,11 +60,6 @@ class Plugin extends Container implements Runnable
         if (! defined($name)) {
             define($name, $value);
         }
-    }
-
-    public function getConfig(): array
-    {
-        return $this->pluginConfig->getPluginData();
     }
 
     public function run(): void
@@ -110,4 +120,13 @@ class Plugin extends Container implements Runnable
             $subscriptionContainer->register($provider);
         }
     }
+}
+
+function pluginDir()
+{
+    return \plugin_dir_path(Plugin::getInstance()->getPluginFile());
+}
+
+function pluginUrl() {
+    return \plugin_dir_url(Plugin::getInstance()->getPluginFile());
 }
